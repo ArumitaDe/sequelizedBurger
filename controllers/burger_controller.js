@@ -2,38 +2,53 @@
 // DEPENDENCIES
 // We need to include the path package to get the correct file path for our html
 // ===============================================================================
-var burger= require("../models/burger.js");
+var models= require("../models");
 var express = require('express');
 var router = express.Router();
 // ===============================================================================
 // ROUTING
 // ===============================================================================
 router.get('/', function(req, res) {
-  burger.selectWhere(function(data) {
-    var hbsObject = {
-      burgers: data
-    };
-    console.log(hbsObject);
+  models.burgers.findAll().then(function(data) {
+
+    var hbsObject = {burgers: data};
+
     res.render('index', hbsObject);
+
   });
 });
 
 router.post('/burgers', function(req, res) {
-  burger.insert([
-    'burger_name','devoured'
-  ], [
-    req.body.burger_name,0
-  ], function(data) {
+ models.burgers.create({
+
+    burger_name: req.body.burger_name,
+
+  }).then(function() {
+
     res.redirect('/');
+
   });
 });
 
 router.put('/burgers/:id', function(req, res) {
-  var condition = 'id = ' + req.params.id;
+  models.burgers.update(
 
-  burger.update([`devoured`],[1],
-  condition, function(data) {
+  {
+
+    devoured: 1
+
+  },
+
+  {
+
+    where: { id : req.params.id }
+
+  })
+
+  .then(function (result) {
+
     res.redirect('/');
+
   });
 });
 

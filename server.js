@@ -48,11 +48,14 @@ app.use(bodyParser.json({ type: "application/vnd.api+json" }));
 //require("./app/routing/apiRoutes")(app);
 var routes=require("./controllers/burger_controller.js");
 app.use('/', routes);
+var db=require("./models")
 // ==============================================================================
 // LISTENER
 // The below code effectively "starts" our server
 // ==============================================================================
 
-app.listen(PORT, function() {
-  console.log("App listening on PORT: " + PORT);
+db.sequelize.sync().then(function() {
+  app.listen(PORT, function() {
+    console.log("App listening on PORT " + PORT);
+  });
 });
